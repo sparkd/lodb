@@ -1,10 +1,10 @@
 # lodb
 Linked Open Database
 
-http://stackoverflow.com/questions/403420/convert-xsd-into-sql-relational-tables
-
-https://github.com/hypebeast/flask-gulp-starter-kit
-
+* Config directory for JSON schema files
+* API for listing schemas
+* API for returning a schema
+* API for CRUD operations against a particular schema, including validation.
 
 ## Plan
 
@@ -26,6 +26,8 @@ https://github.com/jdorn/json-editor
 
 http://madebymany.github.io/sir-trevor-js/example.html
 
+http://stackoverflow.com/questions/403420/convert-xsd-into-sql-relational-tables
 
+https://github.com/hypebeast/flask-gulp-starter-kit
 
 
