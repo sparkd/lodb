@@ -7,6 +7,7 @@ import click
 
 
 @click.command()
-def schema():
+@click.argument('file')
+def install_schema(file):
     """Import schema."""
-    print('IMPORT')
+    print(file)

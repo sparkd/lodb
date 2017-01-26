@@ -3,14 +3,11 @@
 """
 Created by Ben Scott on '26/01/2017'.
 """
-
-
-
-# import logging.config
-# from flask import Flask, Blueprint, render_template
-# from flask_restful import Api, Resource
+import sys
+import logging
 
 from flask import Flask, Blueprint
+from inspect import getmembers, isfunction
 
 from lodb.config import ProductionConfig
 from lodb.extensions import cache, csrf, debug_toolbar
@@ -26,7 +23,7 @@ def app_factory(config=ProductionConfig):
     register_extensions(app)
     register_blueprints(app)
     # register_errorhandlers(app)
-    # register_filters(app)
+    register_filters(app)
     # register_hooks(app)
     configure_logging(app)
     register_commands(app)
@@ -71,11 +68,11 @@ def register_blueprints(app):
 #     return None
 
 
-# def register_filters(app):
-#     """Configure template filters."""
-#     from lodb.filters import format_date
-#
-#     app.jinja_env.filters['format_date'] = format_date
+def register_filters(app):
+    """Configure template filters. - Register all filter functions """
+    from lodb import filters
+    for func_name, func in getmembers(filters, isfunction):
+        app.jinja_env.filters[func_name] = func
 
 
 # def register_hooks(app):
@@ -98,8 +95,12 @@ def configure_logging(app):
 
 def register_commands(app):
     """Register Click commands."""
-    app.cli.add_command(commands.schema)
+    app.cli.add_command(commands.install_schema)
 
+
+# import logging.config
+# from flask import Flask, Blueprint, render_template
+# from flask_restful import Api, Resource
 # app = Flask(__name__)
 #
 # logging.config.fileConfig('logging.ini')
