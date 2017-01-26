@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var pkg_json = require('./package.json');
+var pkgJson = require('./package.json');
 var concat = require('gulp-concat');
 var filter = require('gulp-filter');
 var uglify = require('gulp-uglify');
@@ -14,11 +14,11 @@ var runSequence = require('run-sequence');
 var exec = require('child_process').exec;
 var watch = require('gulp-watch');
 
-var staticDir = pkg_json.name + '/static';
+var staticDir = pkgJson.name + '/static';
 
 var paths = {
 	src: {
-		templates: pkg_json.name + '/templates',
+		templates: pkgJson.name + '/templates',
 		sass: staticDir + '/sass',
 		images: staticDir + '/images',
 		js: staticDir + '/js'
@@ -66,10 +66,10 @@ gulp.task('sass', function() {
 gulp.task('runServer', function () {
 	env({
 	    vars: {
-	      FLASK_APP: pkg_json.name + "/app.py",
+	      FLASK_APP: pkgJson.name + "/app.py",
 	      FLASK_DEBUG: 1,
 	    }
-	  })	
+	  })
   exec('flask run', function (err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
