@@ -7,3 +7,4 @@ from flaskext.csrf import csrf
 csrf = csrf
 cache = Cache()
 debug_toolbar = DebugToolbarExtension()
+

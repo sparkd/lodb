@@ -8,9 +8,11 @@ import logging
 
 from flask import Flask, Blueprint
 from inspect import getmembers, isfunction
-
 from lodb.config import ProductionConfig
+# FIXME - Change this to loop through a list - but different inits???
 from lodb.extensions import cache, csrf, debug_toolbar
+from lodb.api.blueprint import get_api_blueprint
+from lodb.api.schema import schema_init
 from lodb import commands
 
 
@@ -24,7 +26,7 @@ def app_factory(config=ProductionConfig):
     register_blueprints(app)
     # register_errorhandlers(app)
     register_filters(app)
-    # register_hooks(app)
+    register_hooks(app)
     configure_logging(app)
     register_commands(app)
     return app
@@ -48,9 +50,7 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    # for blueprint in blueprints:
-    #     app.register_blueprint(blueprint)
-
+    app.register_blueprint(get_api_blueprint(app))
     return None
 
 
@@ -75,73 +75,25 @@ def register_filters(app):
         app.jinja_env.filters[func_name] = func
 
 
-# def register_hooks(app):
-#     """Configure hook."""
-#     @app.before_request
-#     def before_request():
-#         print('Before request hook')
+def register_hooks(app):
+    """Configure hook."""
+    @app.before_first_request
+    def before_first_request():
+        # On start up, parse, validate and load schemas
+        app.logger.info('Before first request: initiating schema')
+        schema_init()
 
 
 def configure_logging(app):
     """Configure logging."""
-    loggers = [app.logger]
     stream_handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     stream_handler.setFormatter(formatter)
-    for logger in loggers:
-        logger.setLevel(app.config['LOG_LEVEL'])
-        logger.addHandler(stream_handler)
+    app.logger.setLevel(app.config['LOG_LEVEL'])
+    app.logger.addHandler(stream_handler)
 
 
 def register_commands(app):
     """Register Click commands."""
     app.cli.add_command(commands.install_schema)
 
-
-# import logging.config
-# from flask import Flask, Blueprint, render_template
-# from flask_restful import Api, Resource
-# app = Flask(__name__)
-#
-# logging.config.fileConfig('logging.ini')
-# log = logging.getLogger(__name__)
-#
-# api_blueprint = Blueprint('api', __name__, url_prefix='/api')
-#
-# api = Api(api_blueprint)
-#
-#
-# class APIRecord(Resource):
-#     def get(self, id):
-#         return id
-#
-#     def delete(self, id):
-#         return id
-#
-#     def put(self, id):
-#         return id
-#
-#
-# class APIList(Resource):
-#     def get(self):
-#         return 'list'
-#
-#     def post(self):
-#         return 'create'
-#
-# api.add_resource(APIList, '/eg/')
-# api.add_resource(APIRecord, '/eg/<int:id>')
-#
-# app.register_blueprint(api_blueprint)
-#
-# # https://github.com/mattupstate/flask-jsonschema
-#
-# #
-# #
-# # @app.route('/hello')
-# # def hello():
-# #     return render_template('hello.html')
-#
-#
-# if __name__ == '__main__':
-#     app.run(debug=True)
