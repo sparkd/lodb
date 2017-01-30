@@ -16,3 +16,4 @@ class DefaultConfig(object):
     SCHEMA_DIR = os.path.abspath(os.path.join(APP_DIR, 'config', 'schemas'))
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     SECRET_KEY = os.environ.get('FLASK_APP_SECRET', 'secret-key')  # TODO: Change me
+    MONGO_URI = "mongodb://localhost:27017/lodb"

@@ -9,13 +9,13 @@ from urllib.parse import urlparse
 
 
 @click.command()
-@click.argument('url')
-def install_schema(url):
+@click.argument('uri')
+def install_schema(uri):
     """Import schema - either JSON schema or XSD to be converted to JSON schema """
-    parsed_url = urlparse(url)
+    parsed_url = urlparse(uri)
     # Is this a remote file
     if parsed_url.netloc:
-        r = requests.get(url)
+        r = requests.get(uri)
     else:
         print('LOCAL')
     # value = click.prompt('Please enter a valid integer', type=int, default=2)

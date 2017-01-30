@@ -9,8 +9,7 @@ import logging
 from flask import Flask, Blueprint
 from inspect import getmembers, isfunction
 from lodb.config import ProductionConfig
-# FIXME - Change this to loop through a list - but different inits???
-from lodb.extensions import cache, csrf, debug_toolbar
+from lodb.extensions import extensions
 from lodb.api.blueprint import get_api_blueprint
 from lodb.api.schema import schema_init
 from lodb import commands
@@ -23,10 +22,10 @@ def app_factory(config=ProductionConfig):
     app = Flask(__name__)
     configure_app(app, config)
     register_extensions(app)
-    register_blueprints(app)
     # register_errorhandlers(app)
     register_filters(app)
-    register_hooks(app)
+    # register_hooks(app)
+    register_blueprints(app)
     configure_logging(app)
     register_commands(app)
     return app
@@ -42,9 +41,8 @@ def register_extensions(app):
 
     :app: The Flask app.
     """
-    cache.init_app(app)
-    csrf(app)
-    debug_toolbar.init_app(app)
+    for extension in extensions:
+        extension.init_app(app)
     return None
 
 
@@ -75,8 +73,11 @@ def register_filters(app):
         app.jinja_env.filters[func_name] = func
 
 
+# I don't like this firing before request - need these to run when app starts
+# As there could be quite a bit of work versioning json schemas
 def register_hooks(app):
     """Configure hook."""
+    # FIXME: I don't like this happening on first request
     @app.before_first_request
     def before_first_request():
         # On start up, parse, validate and load schemas

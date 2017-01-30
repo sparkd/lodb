@@ -16,4 +16,3 @@ class DuplicateSlugError(Exception):
     Raised when multiple schemas have the same slug
     """
 
-
