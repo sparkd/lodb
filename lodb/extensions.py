@@ -5,8 +5,12 @@ from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_pymongo import PyMongo
 
+# Add new extensions
 extensions = [
-    # Cache(),
+    Cache(),
     DebugToolbarExtension(),
     PyMongo(),
 ]
+
+# TODO: Flask-Mail
+# TODO: Flask-User

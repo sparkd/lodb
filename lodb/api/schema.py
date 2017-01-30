@@ -16,7 +16,7 @@ from flask import current_app as app
 from jsonschema import Draft4Validator
 from jsonschema.exceptions import SchemaError
 
-from lodb.exceptions import DuplicateSlugError
+from lodb.exceptions import DuplicateSlugError, SchemaParseError
 from lodb.api.mongo import mongo_get_collection, mongo_ensure_index
 
 re_title = re.compile('([\w-]+)\.')
@@ -34,7 +34,7 @@ def schema_get_title_from_path(schema_file_path):
     return m.group(0)
 
 
-def schema_list(schema_dir):
+def schema_file_list(schema_dir):
     """
     Return a list of schemas, keyed by file name (known unique value)
     :return:
@@ -66,25 +66,23 @@ def schema_init():
     Start up function, validates & loads schema into mongo db
     :return:
     """
-    with app.app_context():
-        for slug, schema in schema_list(app.config['SCHEMA_DIR']).items():
-            # Validate schema syntax
-            try:
-                Draft4Validator.check_schema(schema)
-            except SchemaError:
-                app.logger.error('Schema \'%s\' - invalid schema' % slug)
-                # FIXME: Better exception handling
-                raise
-            else:
-                saved_schema = schema_load(slug)
-                # If we have an existing saved schema, check if the new schema has changed
-                # If it has, we want to save a copy of the new schema so changed can be traced
-                if saved_schema:
-                    if schema_diff(schema, saved_schema):
-                        app.logger.error('New version of schema \'%s\' detected - updating saved schema' % slug)
-                        schema_save(slug, schema)
-                else:
+    for slug, schema in schema_file_list(app.config['SCHEMA_DIR']).items():
+        # Validate schema syntax
+        try:
+            Draft4Validator.check_schema(schema)
+        except SchemaError:
+            app.logger.error('Schema \'%s\' - invalid schema' % slug)
+            raise SchemaParseError(slug)
+        else:
+            saved_schema = schema_load(slug)
+            # If we have an existing saved schema, check if the new schema has changed
+            # If it has, we want to save a copy of the new schema so changed can be traced
+            if saved_schema:
+                if schema_diff(schema, saved_schema):
+                    app.logger.error('New version of schema \'%s\' detected - updating saved schema' % slug)
                     schema_save(slug, schema)
+            else:
+                schema_save(slug, schema)
 
     # Add created_at & slug indexes if they don't already exist
     mongo_ensure_index('schema', 'created_at')
@@ -131,10 +129,6 @@ def schema_load_all():
     Load all schemas, keyed by slugged and only the most recent version
     :return: dict
     """
-
-    print('LOAD ALL')
-    print(schema_load('basic'))
-
     # Map reduce function for the group method - adds in schema to the results
     map_reduce = Code("""
         function (curr, result) {

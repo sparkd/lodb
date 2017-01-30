@@ -8,6 +8,7 @@ from flask import current_app as app
 
 
 def mongo_db(config_prefix='MONGO'):
+    # print(app.extensions['pymongo'])
     client, db = app.extensions['pymongo'][config_prefix]
     return db
 

@@ -7,6 +7,7 @@ Created by Ben Scott on '26/01/2017'.
 from flask_restful import Resource
 from lodb.api.schema import schema_load
 
+
 class APIResource(Resource):
     """
     Base API resource.

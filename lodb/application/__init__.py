@@ -16,7 +16,7 @@ from lodb import commands
 
 
 def app_factory(config=ProductionConfig):
-    """An application factory, that creates a new Flask app.
+    """An application factory - creates a new Flask app.
     :param config: The configuration object to use. Defaults to production
     """
     app = Flask(__name__)
@@ -24,7 +24,7 @@ def app_factory(config=ProductionConfig):
     register_extensions(app)
     # register_errorhandlers(app)
     register_filters(app)
-    # register_hooks(app)
+    register_hooks(app)
     register_blueprints(app)
     configure_logging(app)
     register_commands(app)
@@ -77,7 +77,6 @@ def register_filters(app):
 # As there could be quite a bit of work versioning json schemas
 def register_hooks(app):
     """Configure hook."""
-    # FIXME: I don't like this happening on first request
     @app.before_first_request
     def before_first_request():
         # On start up, parse, validate and load schemas
