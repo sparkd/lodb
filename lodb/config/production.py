@@ -9,6 +9,7 @@ from lodb.config.default import DefaultConfig
 
 
 class ProductionConfig(DefaultConfig):
+    ENV = 'prod'
     DEBUG = False
     TESTING = False
-    LOG_LEVEL = logging.WARN
+    LOG_LEVEL = logging.WARNING

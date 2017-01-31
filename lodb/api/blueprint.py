@@ -18,14 +18,16 @@ def get_api_blueprint(app):
     :return:
     """
 
+    # FIXME: URL Prefix should be set in config
     api_blueprint = Blueprint('api', __name__, url_prefix='/api')
     api = Api(api_blueprint)
 
     # Dictionary of all resources to be added
     resources = {
-        '/{slug}/<int:id>': RecordAPIResource,
+        # FIXME: Update <str:id> to ensure mongo GUID
+        '/{slug}/<uuid:id>': RecordAPIResource,
         '/{slug}/': ListAPIResource,
-        '/{slug}.json': SchemaAPIResource
+        '/{slug}.schema.json': SchemaAPIResource
     }
 
     # Get all slugs from json schema files - use the config json schema

@@ -8,8 +8,10 @@ import logging
 
 from flask import Flask, Blueprint
 from inspect import getmembers, isfunction
+
 from lodb.config import ProductionConfig
 from lodb.extensions import extensions
+from lodb.encoders import JSONEncoder
 from lodb.api.blueprint import get_api_blueprint
 from lodb.api.schema import schema_init
 from lodb import commands
@@ -28,6 +30,7 @@ def app_factory(config=ProductionConfig):
     register_blueprints(app)
     configure_logging(app)
     register_commands(app)
+    register_encoders(app)
     return app
 
 
@@ -96,4 +99,10 @@ def configure_logging(app):
 def register_commands(app):
     """Register Click commands."""
     app.cli.add_command(commands.install_schema)
+
+
+def register_encoders(app):
+    """Register Encoders."""
+    app.json_encoder = JSONEncoder
+    return None
 

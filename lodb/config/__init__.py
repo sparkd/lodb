@@ -6,4 +6,4 @@ Created by Ben Scott on '26/01/2017'.
 
 from .development import DevelopmentConfig
 from .production import ProductionConfig
-from .testing import TestingConfig
+from .test import TestConfig

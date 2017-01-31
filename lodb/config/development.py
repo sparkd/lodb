@@ -7,5 +7,6 @@ from lodb.config.default import DefaultConfig
 
 
 class DevelopmentConfig(DefaultConfig):
+    ENV = 'dev'
     DEBUG = True
     TESTING = False

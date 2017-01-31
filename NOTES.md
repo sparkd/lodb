@@ -21,6 +21,8 @@ How to validate this?
 
 https://lists.w3.org/Archives/Public/public-linked-json/2013Aug/0070.html
 
+For processing data
+json.loads(src, object_hook=func)
 
 
 Is a better way of doing validation, to convert JSON to RDF, and then use XSD?

@@ -12,7 +12,7 @@ import pymongo
 from bson.code import Code
 from slugify import slugify
 from datetime import datetime
-from flask import current_app as app
+from flask import current_app
 from jsonschema import Draft4Validator
 from jsonschema.exceptions import SchemaError
 
@@ -66,12 +66,12 @@ def schema_init():
     Start up function, validates & loads schema into mongo db
     :return:
     """
-    for slug, schema in schema_file_list(app.config['SCHEMA_DIR']).items():
+    for slug, schema in schema_file_list(current_app.config['SCHEMA_DIR']).items():
         # Validate schema syntax
         try:
             Draft4Validator.check_schema(schema)
         except SchemaError:
-            app.logger.error('Schema \'%s\' - invalid schema' % slug)
+            current_app.logger.error('Schema \'%s\' - invalid schema' % slug)
             raise SchemaParseError(slug)
         else:
             saved_schema = schema_load(slug)
@@ -79,7 +79,7 @@ def schema_init():
             # If it has, we want to save a copy of the new schema so changed can be traced
             if saved_schema:
                 if schema_diff(schema, saved_schema):
-                    app.logger.error('New version of schema \'%s\' detected - updating saved schema' % slug)
+                    current_app.logger.error('New version of schema \'%s\' detected - updating saved schema' % slug)
                     schema_save(slug, schema)
             else:
                 schema_save(slug, schema)

@@ -2,6 +2,10 @@
 Linked Open Database
 
 
+## Tests
+
+nosetests tests/test_api.py --nocapture
+
 
 http://python-eve.org/
 http://stackoverflow.com/questions/37587620/python-json-rest-framework-with-deserialiser-and-schema-validation-jsonschema

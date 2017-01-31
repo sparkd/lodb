@@ -22,6 +22,16 @@ def mongo_get_collection(collection_name):
     return mongo_db()[collection_name]
 
 
+def mongo_query_collection(collection_name, query_args):
+    """
+    Find records in a collection
+    :param collection_name:
+    :param query_args: dict - query_args skip, limit
+    :return: PyMongo Cursor
+    """
+    return mongo_db()[collection_name].find(**query_args)
+
+
 def mongo_ensure_index(collection_name, field_name):
     """
     Create indexed if it doesn't exist - replaces deprecated pymongo.ensure_index

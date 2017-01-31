@@ -1,6 +1,7 @@
 *.DS_Store
 *.pyc
 .git
+.env
 node_modules/
 npm-debug.log
 bower_components
