@@ -11,12 +11,3 @@ def utc_timestamp():
     now = datetime.datetime.utcnow()
     return now.replace(tzinfo=pytz.utc)
 
-
-class AttrDict(dict):
-    """
-    Dictionary with values accessible as an attribute
-    """
-    def __init__(self, *args, **kwargs):
-        super(AttrDict, self).__init__(*args, **kwargs)
-        self.__dict__ = self
-

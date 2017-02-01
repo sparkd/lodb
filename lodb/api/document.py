@@ -12,7 +12,6 @@ from flask import abort, current_app
 from lodb.api.schema import Schema
 from lodb.api.exceptions import APIException, APIValidationException
 from lodb.api.collection import Collection
-from lodb.utils import AttrDict
 
 
 class Document(object):

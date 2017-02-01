@@ -60,9 +60,8 @@ class RecordAPIResource(APIResource):
     def put(self, identifier):
         data = request.get_json()
         update_result = self.doc.update(identifier, data)
-        print(dir(update_result))
-        # Mongo 2.x does not return an update_result.modified_count - which is breaking travis build
-        # SO if we don't have an update result, load the record and check the _updated_on timestamp
+        # Mongo 2.x does not return an update_result.modified_count - even though record is updated
+        # This is breaking travis build, so we'll just check a document's been matched
         if update_result.matched_count == 1:
             return self.success(message="Record updated")
         else:
