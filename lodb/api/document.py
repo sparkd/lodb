@@ -6,11 +6,13 @@ Created by Ben Scott on '31/01/2017'.
 
 import bson
 import jsonschema
+from datetime import datetime
 from flask import abort, current_app
 
 from lodb.api.schema import Schema
 from lodb.api.exceptions import APIException, APIValidationException
 from lodb.api.collection import Collection
+from lodb.utils import AttrDict
 
 
 class Document(object):
@@ -28,6 +30,7 @@ class Document(object):
 
     def create(self, data):
         self.validate(data)
+        self._timestamps(data, ['_created_on', '_updated_on'])
         try:
             result = self.collection.insert_one(data)
         except Exception as e:
@@ -47,12 +50,20 @@ class Document(object):
     def update(self, identifier, data):
         self.validate(data)
         record = self.read(identifier)
-        print(record)
-        ret = self.collection.update_one({'_id': bson.ObjectId(identifier)}, {'$set': data})
-        print('---')
-        record = self.read(identifier)
-        print(record)
-        return ret
+        # Add updated on date
+        self._timestamps(data, ['_updated_on'])
+        update_result = self.collection.update_one({'_id': bson.ObjectId(identifier)}, {'$set': data})
+        # Mongo 2.* does not return an update_result
+        # SO if we don't have an update result, load the record and check the _updated_on timestamp
+        update_result = None
+
+        if not update_result:
+            updated_record = self.read(identifier)
+            update_result = AttrDict(
+                modified_count=1 if updated_record['_updated_on'] > record['_updated_on'] else 0
+            )
+
+        return update_result
 
     def delete(self, identifier):
         return self.collection.delete_one({'_id': bson.ObjectId(identifier)})
@@ -72,6 +83,11 @@ class Document(object):
                 error=err.message
             )
             raise APIValidationException(msg)
+
+    @staticmethod
+    def _timestamps(data, fields):
+        for field in fields:
+            data[field] = datetime.now()
 
 
 

@@ -60,10 +60,6 @@ class RecordAPIResource(APIResource):
     def put(self, identifier):
         data = request.get_json()
         result = self.doc.update(identifier, data)
-
-        print(data)
-        print(result.modified_count)
-
         if result.modified_count == 1:
             return self.success(message="Record updated")
         else:
