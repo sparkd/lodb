@@ -29,7 +29,7 @@ def app_factory(config=ProductionConfig):
     app = Flask(__name__)
     configure_app(app, config)
     register_extensions(app)
-    # register_error_handlers(app)
+    register_error_handlers(app)
     register_filters(app)
     register_hooks(app)
     register_blueprints(app)
