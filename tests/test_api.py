@@ -86,6 +86,8 @@ class TestAPISchema(object):
         data['price'] = 5
         data['name'] = 'Oranges'
         update_response = self._put('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), data=json.dumps(data), content_type='application/json')
+
+        print(update_response)
         self._assert_success(update_response)
         # Load the record and check the values have been updated
         response = self._get('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
