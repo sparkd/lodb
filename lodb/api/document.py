@@ -46,7 +46,13 @@ class Document(object):
 
     def update(self, identifier, data):
         self.validate(data)
-        return self.collection.update_one({'_id': bson.ObjectId(identifier)}, {'$set': data})
+        record = self.read(identifier)
+        print(record)
+        ret = self.collection.update_one({'_id': bson.ObjectId(identifier)}, {'$set': data})
+        print('---')
+        record = self.read(identifier)
+        print(record)
+        return ret
 
     def delete(self, identifier):
         return self.collection.delete_one({'_id': bson.ObjectId(identifier)})
