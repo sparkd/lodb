@@ -28,6 +28,16 @@ class APIResource(Resource):
         """
         self.slug = slug
 
+    @staticmethod
+    def success(**kwargs):
+        kwargs['status'] = 'success'
+        return jsonify(kwargs)
+
+    @staticmethod
+    def fail(**kwargs):
+        kwargs['status'] = 'failure'
+        return jsonify(kwargs)
+
 
 class RecordAPIResource(APIResource):
     """
@@ -42,12 +52,17 @@ class RecordAPIResource(APIResource):
         return jsonify(self.doc.read(identifier))
 
     def delete(self, identifier):
+        print("DELETE")
         self.doc.delete(identifier)
-        return {'success': 1}
+        return self.success()
 
     def put(self, identifier):
         data = request.get_json(silent=True)
-        self.doc.update(identifier, data)
+        result = self.doc.update(identifier, data)
+        if result.modified_count == 1:
+            return self.success(message="Record updated")
+        else:
+            return self.fail(message="Record not updated")
 
 
 class ListAPIResource(APIResource):
@@ -72,7 +87,8 @@ class ListAPIResource(APIResource):
 
     def post(self):
         data = request.get_json(silent=True)
-        Document(self.slug).create(data)
+        result = Document(self.slug).create(data)
+        return self.success(inserted_id=result.inserted_id)
 
 
 class SchemaAPIResource(APIResource):

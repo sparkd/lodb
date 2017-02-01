@@ -45,11 +45,11 @@ class Document(object):
             abort(404, 'Record not found')
 
     def update(self, identifier, data):
-        # FIXME: Add update on
         self.validate(data)
+        return self.collection.update_one({'_id': bson.ObjectId(identifier)}, {'$set': data})
 
     def delete(self, identifier):
-        self.collection.delete_one({'_id': identifier})
+        return self.collection.delete_one({'_id': bson.ObjectId(identifier)})
 
     def validate(self, data):
         """
