@@ -53,6 +53,9 @@ class Document(object):
         # # Add updated on date
         self._timestamps(data, ['_updated_on'])
         update_result = self.collection.update_one({'_id': bson.ObjectId(identifier)}, {'$set': data})
+        print(update_result)
+        update_result = None
+
         # Mongo 2.x does not return an update_result - which is breaking travis build
         # SO if we don't have an update result, load the record and check the _updated_on timestamp
         if not update_result:
@@ -60,6 +63,7 @@ class Document(object):
             update_result = AttrDict(
                 modified_count=1 if updated_record['_updated_on'] > record['_updated_on'] else 0
             )
+        print(update_result)
         return update_result
 
     def delete(self, identifier):
