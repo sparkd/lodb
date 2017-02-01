@@ -6,7 +6,9 @@ Created by Ben Scott on '26/01/2017'.
 
 
 from flask import request, jsonify
-from flask_restful import Resource, reqparse
+from flask_restful import reqparse
+
+from flask_restful_swagger_2 import swagger, Resource
 
 from lodb.api.schema import Schema
 from lodb.api.document import Document
@@ -52,7 +54,6 @@ class RecordAPIResource(APIResource):
         return jsonify(self.doc.read(identifier))
 
     def delete(self, identifier):
-        print("DELETE")
         self.doc.delete(identifier)
         return self.success()
 

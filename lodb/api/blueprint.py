@@ -5,7 +5,7 @@ Created by Ben Scott on '27/01/2017'.
 """
 
 from flask import Blueprint
-from flask_restful import Api, Resource
+from flask_restful_swagger_2 import Api
 
 from lodb.api.schema import Schema
 from lodb.api.resource import RecordAPIResource, ListAPIResource, SchemaAPIResource
@@ -18,7 +18,7 @@ def get_api_blueprint(app):
     :return:
     """
     api_blueprint = Blueprint('api', __name__, url_prefix=app.config['API_URL_PREFIX'])
-    api = Api(api_blueprint)
+    api = Api(api_blueprint, add_api_spec_resource=False)
 
     # Dictionary of all resources to be added
     resources = {

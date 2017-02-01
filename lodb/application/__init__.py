@@ -7,7 +7,9 @@ import sys
 import logging
 
 from flask import Flask, jsonify
+from flask.helpers import get_debug_flag
 from inspect import getmembers, isfunction
+from flask_restful_swagger_2 import get_swagger_blueprint
 
 from lodb.config import ProductionConfig
 from lodb.extensions import extensions
@@ -15,6 +17,7 @@ from lodb.encoders import JSONEncoder
 from lodb.api.exceptions import APIException
 from lodb.api.blueprint import get_api_blueprint
 from lodb.api.schema import Schema
+from lodb.api.swagger import get_swagger_docs
 from lodb import commands
 
 
@@ -53,7 +56,10 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(get_api_blueprint(app))
+    # Prepare a blueprint to serve the combined list of swagger document objects and register it
+    app.register_blueprint(get_swagger_blueprint(get_swagger_docs(app), app.config['API_SWAGGER_URL'], title=app.config['API_TITLE'], api_version=app.config['API_VERSION']))
     return None
+
 
 def register_error_handlers(app):
     """Register error handlers."""
@@ -65,16 +71,13 @@ def register_error_handlers(app):
         response.status_code = error.status_code
         return response
 
-    @app.errorhandler(404)
-    def not_found(error=None):
-        return 'ERR'
-
     # If not in debug mode, then handle all other errors
-    # @app.errorhandler(Exception)
-    # def handle_exception(error):
-    #     response = jsonify({'error': 'Server error'})
-    #     response.status_code = 400
-    #     return response
+    if not get_debug_flag():
+        @app.errorhandler(Exception)
+        def handle_exception(error):
+            response = jsonify({'error': 'Server error'})
+            response.status_code = 400
+            return response
 
     return None
 
