@@ -55,11 +55,17 @@ class Document(object):
         update_result = self.collection.update_one({'_id': bson.ObjectId(identifier)}, {'$set': data})
         # Mongo 2.x does not return an update_result - which is breaking travis build
         # SO if we don't have an update result, load the record and check the _updated_on timestamp
+
+        print('UPDATE RESULT')
+        print(update_result)
+
         if not update_result:
             updated_record = self.read(identifier)
             update_result = AttrDict(
                 modified_count=1 if updated_record['_updated_on'] > record['_updated_on'] else 0
             )
+        print('----')
+        print(update_result)
         return update_result
 
     def delete(self, identifier):
