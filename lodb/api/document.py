@@ -53,7 +53,10 @@ class Document(object):
         # # Add updated on date
         self._timestamps(data, ['_updated_on'])
         update_result = self.collection.update_one({'_id': bson.ObjectId(identifier)}, {'$set': data})
-        print(update_result)
+        print(update_result.modified_count)
+        print(update_result.matched_count)
+        # matchedCount
+        print(data)
         update_result = None
 
         # Mongo 2.x does not return an update_result - which is breaking travis build
