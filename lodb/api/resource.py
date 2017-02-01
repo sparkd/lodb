@@ -58,8 +58,12 @@ class RecordAPIResource(APIResource):
         return self.success()
 
     def put(self, identifier):
-        data = request.get_json(silent=True)
+        data = request.get_json()
         result = self.doc.update(identifier, data)
+
+        print(data)
+        print(result.modified_count)
+
         if result.modified_count == 1:
             return self.success(message="Record updated")
         else:
@@ -88,9 +92,7 @@ class ListAPIResource(APIResource):
 
     def post(self):
         data = request.get_json(silent=True)
-        print(data)
         result = Document(self.slug).create(data)
-        print(result)
         return self.success(inserted_id=result.inserted_id)
 
 
