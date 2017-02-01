@@ -1,6 +1,7 @@
 # lodb
 Linked Open Database
 
+[![Coverage Status](https://coveralls.io/repos/github/sparkd/lodb/badge.svg?branch=master)](https://coveralls.io/github/sparkd/lodb?branch=master)
 
 ## Tests
 

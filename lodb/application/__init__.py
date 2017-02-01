@@ -10,6 +10,7 @@ from flask import Flask, jsonify
 from flask.helpers import get_debug_flag
 from inspect import getmembers, isfunction
 from flask_restful_swagger_2 import get_swagger_blueprint
+from flask_cors import CORS
 
 from lodb.config import ProductionConfig
 from lodb.extensions import extensions
@@ -58,6 +59,8 @@ def register_blueprints(app):
     app.register_blueprint(get_api_blueprint(app))
     # Prepare a blueprint to serve the combined list of swagger document objects and register it
     app.register_blueprint(get_swagger_blueprint(get_swagger_docs(app), app.config['API_SWAGGER_URL'], title=app.config['API_TITLE'], api_version=app.config['API_VERSION']))
+    # Allow CORS for the Swagger URL so swagger-ui can access it
+    CORS(app, resources={r"%s.json" % app.config['API_SWAGGER_URL']: {"origins": "*"}})
     return None
 
 

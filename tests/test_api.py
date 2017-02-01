@@ -45,10 +45,10 @@ class TestAPISchema(object):
     def _delete(self, endpoint, **kwargs):
         return self._call('delete', endpoint, **kwargs)
 
-    def _call(self, method, endpoint, **kwargs):
+    def _call(self, method, endpoint, status_code=200, **kwargs):
         func = getattr(self.app, method)
         response = func(endpoint, **kwargs)
-        assert_equal(response.status_code, 200)
+        assert_equal(response.status_code, status_code)
         return self._response_to_json(response)
 
     @staticmethod
