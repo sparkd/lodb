@@ -7,7 +7,7 @@ Created by Ben Scott on '27/01/2017'.
 from flask import Blueprint
 from flask_restful import Api, Resource
 
-from lodb.api.schema import schema_file_list
+from lodb.api.schema import Schema
 from lodb.api.resource import RecordAPIResource, ListAPIResource, SchemaAPIResource
 
 
@@ -17,15 +17,13 @@ def get_api_blueprint(app):
     :param app:
     :return:
     """
-
-    # FIXME: URL Prefix should be set in config
-    api_blueprint = Blueprint('api', __name__, url_prefix='/api')
+    api_blueprint = Blueprint('api', __name__, url_prefix=app.config['API_URL_PREFIX'])
     api = Api(api_blueprint)
 
     # Dictionary of all resources to be added
     resources = {
         # FIXME: Update <str:id> to ensure mongo GUID
-        '/{slug}/<uuid:id>': RecordAPIResource,
+        '/{slug}/<string:identifier>': RecordAPIResource,
         '/{slug}/': ListAPIResource,
         '/{slug}.schema.json': SchemaAPIResource
     }
@@ -34,7 +32,7 @@ def get_api_blueprint(app):
     # files as the schema source of truth - if a config file is deleted
     # it can then persist in the mongo collection for data versioning
     # But will not be available via the API
-    for slug in schema_file_list(app.config['SCHEMA_DIR']).keys():
+    for slug in Schema().list_files(app.config['SCHEMA_DIR']).keys():
         for endpoint, resource in resources.items():
             slugged_endpoint = endpoint.format(slug=slug)
             # Add the resource - we need to manually specify the endpoint

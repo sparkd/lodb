@@ -6,14 +6,15 @@ Created by Ben Scott on '26/01/2017'.
 import sys
 import logging
 
-from flask import Flask, Blueprint
+from flask import Flask, jsonify
 from inspect import getmembers, isfunction
 
 from lodb.config import ProductionConfig
 from lodb.extensions import extensions
 from lodb.encoders import JSONEncoder
+from lodb.api.exceptions import APIException
 from lodb.api.blueprint import get_api_blueprint
-from lodb.api.schema import schema_init
+from lodb.api.schema import Schema
 from lodb import commands
 
 
@@ -24,7 +25,7 @@ def app_factory(config=ProductionConfig):
     app = Flask(__name__)
     configure_app(app, config)
     register_extensions(app)
-    # register_errorhandlers(app)
+    register_error_handlers(app)
     register_filters(app)
     register_hooks(app)
     register_blueprints(app)
@@ -54,19 +55,28 @@ def register_blueprints(app):
     app.register_blueprint(get_api_blueprint(app))
     return None
 
+def register_error_handlers(app):
+    """Register error handlers."""
 
-# def register_errorhandlers(app):
-#     """Register error handlers."""
-#     def render_error(error):
-#         """Render error template."""
-#         # If a HTTPException, pull the `code` attribute; default to 500
-#         error_code = getattr(error, 'code', 500)
-#         return render_template('errors/{0}.html'.format(error_code)), error_code
-#
-#     for errcode in [401, 404, 500]:
-#         app.errorhandler(errcode)(render_error)
-#
-#     return None
+    # Handle API errors
+    @app.errorhandler(APIException)
+    def handle_api_exception(error):
+        response = jsonify(error.to_dict())
+        response.status_code = error.status_code
+        return response
+
+    @app.errorhandler(404)
+    def not_found(error=None):
+        return 'ERR'
+
+    # If not in debug mode, then handle all other errors
+    # @app.errorhandler(Exception)
+    # def handle_exception(error):
+    #     response = jsonify({'error': 'Server error'})
+    #     response.status_code = 400
+    #     return response
+
+    return None
 
 
 def register_filters(app):
@@ -84,7 +94,7 @@ def register_hooks(app):
     def before_first_request():
         # On start up, parse, validate and load schemas
         app.logger.info('Before first request: initiating schema')
-        schema_init()
+        Schema().build()
 
 
 def configure_logging(app):

@@ -4,15 +4,14 @@
 Created by Ben Scott on '26/01/2017'.
 """
 
-import jsonschema
-from flask import request, current_app, jsonify
-from flask_restful import Resource, reqparse
-import json
 
-from lodb.api.schema import schema_load
-from lodb.api.mongo import mongo_get_collection, mongo_query_collection
+from flask import request, jsonify
+from flask_restful import Resource, reqparse
+
+from lodb.api.schema import Schema
+from lodb.api.document import Document
+from lodb.api.collection import Collection
 from lodb.parsers import pagination_parser
-# from lodb.encoders import BSONEncoder
 
 parser = reqparse.RequestParser(bundle_errors=True)
 
@@ -28,8 +27,6 @@ class APIResource(Resource):
         :param slug: Schema slog
         """
         self.slug = slug
-        self.schema = schema_load(slug)
-        self.collection = mongo_get_collection(slug)
 
 
 class RecordAPIResource(APIResource):
@@ -37,18 +34,20 @@ class RecordAPIResource(APIResource):
     API resource for single record
     """
 
-    # FIXME: Add validator decorator - http://stackoverflow.com/questions/24238743/flask-decorator-to-verify-json-and-json-schema
-    # Pagination: https://github.com/postrational/rest_api_demo/blob/master/rest_api_demo/api/blog/parsers.py
+    def __init__(self, slug):
+        super(RecordAPIResource, self).__init__(slug)
+        self.doc = Document(slug)
 
-    def get(self, id):
-        # MONGO: find one or 404
-        return id
+    def get(self, identifier):
+        return jsonify(self.doc.read(identifier))
 
-    def delete(self, id):
-        return id
+    def delete(self, identifier):
+        self.doc.delete(identifier)
+        return {'success': 1}
 
-    def put(self, id):
-        return id
+    def put(self, identifier):
+        data = request.get_json(silent=True)
+        self.doc.update(identifier, data)
 
 
 class ListAPIResource(APIResource):
@@ -62,11 +61,10 @@ class ListAPIResource(APIResource):
             query_args['skip'] = (pagination['page']-1)*pagination['limit']
 
         # Query MongoDB - gets result cursor
-        cursor = mongo_query_collection(self.slug, query_args)
-
-        # return json.dumps(list(cursor), default=BSONEncoder)
+        cursor = Collection(self.slug).find(**query_args)
 
         # Return JSON dict of records and total
+        # Explicity pass through jsonify so it uses custom JSONEncoder
         return jsonify({
             'total': cursor.count(),
             'records': list(cursor)
@@ -74,33 +72,10 @@ class ListAPIResource(APIResource):
 
     def post(self):
         data = request.get_json(silent=True)
-        try:
-            jsonschema.validate(data, self.schema)
-        except jsonschema.exceptions.ValidationError:
-            raise
-        else:
-            # FIXME: Handle errors, and responses
-            # FIXME: Look at https://github.com/nathancahill/flask-inputs
-            # FIXME: Look at https://github.com/xmm/flask-restful-example
-            # FIXME: https://github.com/zalando/connexion
-            try:
-                result = self.collection.insert(data)
-            except Exception as e:
-                current_app.logger.error(e)
-            else:
-                current_app.logger.info('Record %s(%s) inserted', self.slug, data['_id'])
-
-        return 'create'
+        Document(self.slug).create(data)
 
 
 class SchemaAPIResource(APIResource):
     def get(self):
-        return self.schema
-
-
-class SchemaListAPIResource(APIResource):
-    """
-    List all api resources
-    """
-    def get(self):
-        return self.schema
+        schema = Schema().load(self.slug)
+        return jsonify(schema)
