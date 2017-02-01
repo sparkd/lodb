@@ -1,6 +1,6 @@
 language: python
 python:
-  - "2.7"
+#  - "2.7"  # Swagger 2 is broken on 2.7
   - "3.3"
   - "3.4"
   - "3.5"
