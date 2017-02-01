@@ -8,7 +8,7 @@ from flask import Blueprint
 from flask_restful_swagger_2 import Api
 
 from lodb.api.schema import Schema
-from lodb.api.resource import RecordAPIResource, ListAPIResource, SchemaAPIResource
+from lodb.api.resource import RecordAPIResource, ListAPIResource, SchemaAPIResource, SchemaListAPIResource
 
 
 def get_api_blueprint(app):
@@ -38,5 +38,8 @@ def get_api_blueprint(app):
             # Add the resource - we need to manually specify the endpoint
             # so we don't get collisions with multiple schemas
             api.add_resource(resource, slugged_endpoint, endpoint=slugged_endpoint, resource_class_args=(slug,))
+
+    # Add the
+    api.add_resource(SchemaListAPIResource, '/')
 
     return api_blueprint

@@ -2,6 +2,7 @@
 *.pyc
 .git
 .env
+.coverage
 node_modules/
 npm-debug.log
 bower_components

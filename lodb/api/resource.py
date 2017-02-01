@@ -98,3 +98,13 @@ class SchemaAPIResource(APIResource):
     def get(self):
         schema = Schema().load(self.slug)
         return jsonify(schema)
+
+
+class SchemaListAPIResource(Resource):
+    """
+    Resource for listing all available schemas
+    """
+    @staticmethod
+    def get():
+        schemas = Schema().load_all()
+        return jsonify(schemas)

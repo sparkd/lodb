@@ -1,4 +1,4 @@
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_true
 import json
 import os
 
@@ -65,6 +65,12 @@ class TestAPISchema(object):
         response = self.app.get('/api/%s.schema.json' % self.schema_slug)
         schema = self._response_to_json(response)
         Draft4Validator(schema)
+
+    def test_api_schema_list_returns_schemas(self):
+        """ Test validation via schema """
+        response = self.app.get('/api/')
+        schemas = self._response_to_json(response)
+        assert_true(self.schema_slug in schemas.keys())
 
     def test_api_creating_record_instance(self):
         data = self._read_data_file('test-valid.json')
