@@ -55,29 +55,29 @@ class TestAPISchema(object):
     def _assert_success(response):
         assert_equal(response['status'], 'success')
 
-    # def test_api_schema_endpoint_exists(self):
-    #     """ Test validation via schema """
-    #     response = self.app.get('/api/%s.schema.json' % self.schema_slug)
-    #     assert_equal(response.status_code, 200)
-    #
-    # def test_api_schema_endpoint_returns_valid_json_schema(self):
-    #     """ Test validation via schema """
-    #     response = self.app.get('/api/%s.schema.json' % self.schema_slug)
-    #     schema = self._response_to_json(response)
-    #     Draft4Validator(schema)
-    #
-    # def test_api_creating_record_instance(self):
-    #     data = self._read_data_file('test-valid.json')
-    #     response = self._post('/api/%s/' % self.schema_slug, data=json.dumps(data), content_type='application/json')
-    #     self._assert_success(response)
-    #
-    # def test_api_reading_record_instance(self):
-    #     # Create a record
-    #     data = self._read_data_file('test-valid.json')
-    #     creating_response = self._post('/api/%s/' % self.schema_slug, data=json.dumps(data), content_type='application/json')
-    #     # Then get the same record, using inserted_id
-    #     response = self._get('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
-    #     assert_equal(creating_response.get('inserted_id'), response.get('_id'))
+    def test_api_schema_endpoint_exists(self):
+        """ Test validation via schema """
+        response = self.app.get('/api/%s.schema.json' % self.schema_slug)
+        assert_equal(response.status_code, 200)
+
+    def test_api_schema_endpoint_returns_valid_json_schema(self):
+        """ Test validation via schema """
+        response = self.app.get('/api/%s.schema.json' % self.schema_slug)
+        schema = self._response_to_json(response)
+        Draft4Validator(schema)
+
+    def test_api_creating_record_instance(self):
+        data = self._read_data_file('test-valid.json')
+        response = self._post('/api/%s/' % self.schema_slug, data=json.dumps(data), content_type='application/json')
+        self._assert_success(response)
+
+    def test_api_reading_record_instance(self):
+        # Create a record
+        data = self._read_data_file('test-valid.json')
+        creating_response = self._post('/api/%s/' % self.schema_slug, data=json.dumps(data), content_type='application/json')
+        # Then get the same record, using inserted_id
+        response = self._get('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
+        assert_equal(creating_response.get('inserted_id'), response.get('_id'))
 
     def test_api_updating_record_instance(self):
         data = self._read_data_file('test-valid.json')
@@ -86,25 +86,23 @@ class TestAPISchema(object):
         data['price'] = 5
         data['name'] = 'Oranges'
         update_response = self._put('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), data=json.dumps(data), content_type='application/json')
-
-        print(update_response)
         self._assert_success(update_response)
         # Load the record and check the values have been updated
-        # response = self._get('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
-        # assert_equal(creating_response.get('inserted_id'), response.get('_id'))
-        # assert_equal(response['price'], data['price'])
-        # assert_equal(response['name'], data['name'])
+        response = self._get('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
+        assert_equal(creating_response.get('inserted_id'), response.get('_id'))
+        assert_equal(response['price'], data['price'])
+        assert_equal(response['name'], data['name'])
 
-    # def test_api_deleting_record_instance(self):
-    #     data = self._read_data_file('test-valid.json')
-    #     creating_response = self._post('/api/%s/' % self.schema_slug, data=json.dumps(data), content_type='application/json')
-    #     # Delete the record
-    #     delete_response = self._delete('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
-    #     self._assert_success(delete_response)
-    #     # Make sure the record has been deleted - trying to get it should return 404
-    #     response = self.app.get('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
-    #     assert_equal(response.status_code, 404)
-    #
-    # def test_api_listing_records(self):
-    #     response = self._get('/api/%s/' % self.schema_slug)
-    #     assert_equal(sorted(['total', 'records']), sorted(list(response.keys())))
+    def test_api_deleting_record_instance(self):
+        data = self._read_data_file('test-valid.json')
+        creating_response = self._post('/api/%s/' % self.schema_slug, data=json.dumps(data), content_type='application/json')
+        # Delete the record
+        delete_response = self._delete('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
+        self._assert_success(delete_response)
+        # Make sure the record has been deleted - trying to get it should return 404
+        response = self.app.get('/api/%s/%s' % (self.schema_slug, creating_response.get('inserted_id')), content_type='application/json')
+        assert_equal(response.status_code, 404)
+
+    def test_api_listing_records(self):
+        response = self._get('/api/%s/' % self.schema_slug)
+        assert_equal(sorted(['total', 'records']), sorted(list(response.keys())))
