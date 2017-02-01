@@ -4,8 +4,7 @@
 Created by Ben Scott on '31/01/2017'.
 """
 
-# from json.encoder import JSONEncoder
-
+import datetime
 from flask.json import JSONEncoder as FlaskJSONEncoder
 from bson.objectid import ObjectId
 
@@ -19,6 +18,8 @@ class JSONEncoder(FlaskJSONEncoder):
     """
     def default(self, obj):
         if type(obj) == ObjectId:
+            return str(obj)
+        elif isinstance(obj, datetime.datetime):
             return str(obj)
         return JSONEncoder.default(self, obj)
 
