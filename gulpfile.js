@@ -67,7 +67,7 @@ gulp.task('runServer', function () {
 	env({
 	    vars: {
 	      FLASK_APP: pkgJson.name + "/app.py",
-	      FLASK_DEBUG: 1,
+	      FLASK_DEBUG: 1
 	    }
 	  })
   exec('flask run', function (err, stdout, stderr) {
