@@ -25,6 +25,10 @@ Implement user auth
 BASIC: API write endpoints protected; read endpoints exposed
 Identify a JSON-LD schema to use for the user.  This is installed by default. Editable in code to change user settings.
 
+https://jwt.io/introduction/
+
+https://auth0.com/blog/build-an-app-with-vuejs/
+
 ## Schema versioning
 
 JSON schema files loaded into MongoDB.  When changed, new version is created with timestamp.  Data can be rebuilt with the correct schema.

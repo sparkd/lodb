@@ -1,12 +1,16 @@
 {
-	"title": "Basic",
+	"schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Basic",
+    "description": "Lorem ipsum dolor sit amet",
 	"type" : "object",
 	"properties": {
 		"price": {
-			"type": "string"
+			"type": "string",
+            "ref": "http://json-schema.org/draft-04/schema#"
 		},
 		"name": {
 			"type": "string"
 		}
-    }	
+    },
+	"required": ["price", "name"]
 }

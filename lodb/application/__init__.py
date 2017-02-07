@@ -62,7 +62,7 @@ def register_blueprints(app):
     # Allow CORS for the Swagger URL so swagger-ui can access it
     # CORS(app, resources={r"%s.json" % app.config['API_SWAGGER_URL']: {"origins": "*"}})
     # CORS(app, resources={r"/api/*": {"origins": "*"}})
-    CORS(app, resources={r"/api/": {"origins": "*"}})
+    CORS(app, resources={r"/api*": {"origins": "*"}})
     return None
 
 

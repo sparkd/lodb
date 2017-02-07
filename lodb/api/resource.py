@@ -51,7 +51,10 @@ class RecordAPIResource(APIResource):
         self.doc = Document(slug)
 
     def get(self, identifier):
-        return jsonify(self.doc.read(identifier))
+        return jsonify({
+            'schema': Schema().load(self.slug),
+            'record': self.doc.read(identifier)
+        })
 
     def delete(self, identifier):
         self.doc.delete(identifier)
@@ -85,6 +88,7 @@ class ListAPIResource(APIResource):
         # Explicity pass through jsonify so it uses custom JSONEncoder
         return jsonify({
             'total': cursor.count(),
+            'schema': Schema().load(self.slug),
             'records': list(cursor)
         })
 

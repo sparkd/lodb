@@ -1,4 +1,6 @@
 {
+	"schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Lorem ipsum dolor sit amet",
 	"type" : "object",
 	"properties": {
 		"price": {
