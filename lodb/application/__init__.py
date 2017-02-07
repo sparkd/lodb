@@ -116,7 +116,8 @@ def configure_logging(app):
 
 def register_commands(app):
     """Register Click commands."""
-    app.cli.add_command(commands.install_schema)
+
+    app.cli.add_command(commands.load_schema)
 
 
 def register_encoders(app):
