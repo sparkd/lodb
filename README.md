@@ -9,6 +9,10 @@ Linked Open Database
 ## Usage
 FLASK_DEBUG=1 python lodb/app.py
 
+FLASK_DEBUG=1 FLASK_APP=lodb/app.py flask load_schema
+
+FLASK_DEBUG=1 FLASK_APP=lodb/app.py flask load_schema http://rs.tdwg.org/dwc/tdwg_dw_core.xsd
+
 ## Tests
 nosetests tests/test_api.py --nocapture
 
