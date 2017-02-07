@@ -23,7 +23,7 @@ def get_api_blueprint(app):
     # Dictionary of all resources to be added
     resources = {
         # FIXME: Update <str:id> to ensure mongo GUID
-        '/{slug}/<string:identifier>/': RecordAPIResource,
+        '/{slug}/<string:identifier>': RecordAPIResource,
         '/{slug}/': ListAPIResource,
         '/{slug}.schema.json': SchemaAPIResource
     }
