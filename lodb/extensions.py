@@ -8,7 +8,7 @@ from flask_pymongo import PyMongo
 # Add new extensions
 extensions = [
     Cache(),
-    DebugToolbarExtension(),
+    # DebugToolbarExtension(),
     PyMongo(),
 ]
 
