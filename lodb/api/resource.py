@@ -93,7 +93,7 @@ class ListAPIResource(APIResource):
         })
 
     def post(self):
-        data = request.get_json(silent=True)
+        data = request.get_json()
         result = Document(self.slug).create(data)
         return self.success(inserted_id=result.inserted_id)
 
