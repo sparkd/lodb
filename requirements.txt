@@ -12,3 +12,4 @@ pymongo==3.4.0
 python-slugify==1.2.1
 simplejson==3.10.0
 requests==2.13.0
+-e git+https://github.com/benscott/xsdtojson.git#egg=xsdtojson
