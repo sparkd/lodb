@@ -23,7 +23,7 @@ from lodb.api.collection import Collection
 
 class Schema(object):
 
-    re_title = re.compile('([\w-]+)\.')
+    re_title = re.compile('([\w-]+)')
 
     @property
     def collection(self):
