@@ -5,10 +5,10 @@ Created by Ben Scott on '27/01/2017'.
 """
 
 from flask import Blueprint
-from flask_restful_swagger_2 import Api
+from flask_restful import Api
 
-from lodb.api.schema import Schema
-from lodb.api.resource import RecordAPIResource, ListAPIResource, SchemaAPIResource, SchemaListAPIResource
+from lodb.api.lib import list_resources
+from lodb.api.resource import SchemaListAPIResource
 
 
 def get_api_blueprint(app):
@@ -18,28 +18,14 @@ def get_api_blueprint(app):
     :return:
     """
     api_blueprint = Blueprint('api', __name__, url_prefix=app.config['API_URL_PREFIX'])
-    api = Api(api_blueprint, add_api_spec_resource=False)
+    api = Api(api_blueprint)
 
-    # Dictionary of all resources to be added
-    resources = {
-        # FIXME: Update <str:id> to ensure mongo GUID
-        '/{slug}/<string:identifier>': RecordAPIResource,
-        '/{slug}/': ListAPIResource,
-        '/{slug}.schema.json': SchemaAPIResource
-    }
+    for slug, endpoint, resource in list_resources(app):
+        # Add the resource - we need to manually specify the endpoint
+        # so we don't get collisions with multiple schemas
+        api.add_resource(resource, endpoint, endpoint=endpoint, resource_class_args=(slug,))
 
-    # Get all slugs from json schema files - use the config json schema
-    # files as the schema source of truth - if a config file is deleted
-    # it can then persist in the mongo collection for data versioning
-    # But will not be available via the API
-    for slug in Schema().list_files(app.config['SCHEMA_DIR']).keys():
-        for endpoint, resource in resources.items():
-            slugged_endpoint = endpoint.format(slug=slug)
-            # Add the resource - we need to manually specify the endpoint
-            # so we don't get collisions with multiple schemas
-            api.add_resource(resource, slugged_endpoint, endpoint=slugged_endpoint, resource_class_args=(slug,))
-
-    # Add the
+    # Add the list of schema resources
     api.add_resource(SchemaListAPIResource, '/')
 
     return api_blueprint

@@ -6,9 +6,7 @@ Created by Ben Scott on '26/01/2017'.
 
 
 from flask import request, jsonify
-from flask_restful import reqparse
-
-from flask_restful_swagger_2 import swagger, Resource
+from flask_restful import reqparse, Resource
 
 from lodb.api.schema import Schema
 from lodb.api.document import Document
@@ -51,16 +49,37 @@ class RecordAPIResource(APIResource):
         self.doc = Document(slug)
 
     def get(self, identifier):
+        """
+        :param identifier:
+        :return:
+         ---
+         description: Returns a {slug} record
+         ---
+        """
         return jsonify({
             'schema': Schema().load(self.slug),
             'record': self.doc.read(identifier)
         })
 
     def delete(self, identifier):
+        """
+        :param identifier:
+        :return:
+         ---
+         description: Deletes a {slug} record
+         ---
+        """
         self.doc.delete(identifier)
         return self.success()
 
     def put(self, identifier):
+        """
+        :param identifier:
+        :return:
+         ---
+         description: Updates a {slug} record
+         ---
+        """
         data = request.get_json()
         update_result = self.doc.update(identifier, data)
         # Mongo 2.x does not return an update_result.modified_count - even though record is updated
@@ -74,6 +93,13 @@ class RecordAPIResource(APIResource):
 class ListAPIResource(APIResource):
 
     def get(self):
+        """
+        List records
+        :return:
+         ---
+         description: List {slug} records
+         ---
+        """
         pagination = pagination_parser()
         # Convert page and limit to skip and limit
         query_args = dict(limit=pagination['limit'])
@@ -93,6 +119,13 @@ class ListAPIResource(APIResource):
         })
 
     def post(self):
+        """
+        Create a record
+        :return:
+         ---
+         description: Creates a {slug} record
+         ---
+        """
         data = request.get_json()
         result = Document(self.slug).create(data)
         return self.success(inserted_id=result.inserted_id)

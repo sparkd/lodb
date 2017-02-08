@@ -1,0 +1,192 @@
+{
+    "properties": {
+        "GlobalUniqueIdentifier": {
+            "type": "string"
+        },
+        "DateLastModified": {
+            "type": "string"
+        },
+        "BasisOfRecord": {
+            "type": "string"
+        },
+        "InstitutionCode": {
+            "type": "string"
+        },
+        "CollectionCode": {
+            "type": "string"
+        },
+        "CatalogNumber": {
+            "type": "string"
+        },
+        "InformationWithheld": {
+            "type": "string"
+        },
+        "Remarks": {
+            "type": "string"
+        },
+        "ScientificName": {
+            "type": "string"
+        },
+        "HigherTaxon": {
+            "type": "string"
+        },
+        "Kingdom": {
+            "type": "string"
+        },
+        "Phylum": {
+            "type": "string"
+        },
+        "Class": {
+            "type": "string"
+        },
+        "Order": {
+            "type": "string"
+        },
+        "Family": {
+            "type": "string"
+        },
+        "Genus": {
+            "type": "string"
+        },
+        "SpecificEpithet": {
+            "type": "string"
+        },
+        "InfraspecificRank": {
+            "type": "string"
+        },
+        "InfraspecificEpithet": {
+            "type": "string"
+        },
+        "AuthorYearOfScientificName": {
+            "type": "string"
+        },
+        "NomenclaturalCode": {
+            "type": "string"
+        },
+        "IdentificationQualifier": {
+            "type": "string"
+        },
+        "HigherGeography": {
+            "type": "string"
+        },
+        "Continent": {
+            "type": "string"
+        },
+        "WaterBody": {
+            "type": "string"
+        },
+        "IslandGroup": {
+            "type": "string"
+        },
+        "Island": {
+            "type": "string"
+        },
+        "Country": {
+            "type": "string"
+        },
+        "StateProvince": {
+            "type": "string"
+        },
+        "County": {
+            "type": "string"
+        },
+        "Locality": {
+            "type": "string"
+        },
+        "MinimumElevationInMeters": {
+            "type": "string"
+        },
+        "MaximumElevationInMeters": {
+            "type": "string"
+        },
+        "MinimumDepthInMeters": {
+            "type": "string"
+        },
+        "MaximumDepthInMeters": {
+            "type": "string"
+        },
+        "CollectingMethod": {
+            "type": "string"
+        },
+        "ValidDistributionFlag": {
+            "type": "string"
+        },
+        "EarliestDateCollected": {
+            "type": "string"
+        },
+        "LatestDateCollected": {
+            "type": "string"
+        },
+        "DayOfYear": {
+            "type": "string"
+        },
+        "Collector": {
+            "type": "string"
+        },
+        "Sex": {
+            "type": "string"
+        },
+        "LifeStage": {
+            "type": "string"
+        },
+        "Attributes": {
+            "type": "string"
+        },
+        "ImageURL": {
+            "type": "string"
+        },
+        "RelatedInformation": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "GlobalUniqueIdentifier",
+        "DateLastModified",
+        "BasisOfRecord",
+        "InstitutionCode",
+        "CollectionCode",
+        "CatalogNumber",
+        "InformationWithheld",
+        "Remarks",
+        "ScientificName",
+        "HigherTaxon",
+        "Kingdom",
+        "Phylum",
+        "Class",
+        "Order",
+        "Family",
+        "Genus",
+        "SpecificEpithet",
+        "InfraspecificRank",
+        "InfraspecificEpithet",
+        "AuthorYearOfScientificName",
+        "NomenclaturalCode",
+        "IdentificationQualifier",
+        "HigherGeography",
+        "Continent",
+        "WaterBody",
+        "IslandGroup",
+        "Island",
+        "Country",
+        "StateProvince",
+        "County",
+        "Locality",
+        "MinimumElevationInMeters",
+        "MaximumElevationInMeters",
+        "MinimumDepthInMeters",
+        "MaximumDepthInMeters",
+        "CollectingMethod",
+        "ValidDistributionFlag",
+        "EarliestDateCollected",
+        "LatestDateCollected",
+        "DayOfYear",
+        "Collector",
+        "Sex",
+        "LifeStage",
+        "Attributes",
+        "ImageURL",
+        "RelatedInformation"
+    ],
+    "schema": "http://json-schema.org/schema#",
+    "type": "object"
+}

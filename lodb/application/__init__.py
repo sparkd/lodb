@@ -58,7 +58,11 @@ def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(get_api_blueprint(app))
     # Prepare a blueprint to serve the combined list of swagger document objects and register it
-    app.register_blueprint(get_swagger_blueprint(get_swagger_docs(app), app.config['API_SWAGGER_URL'], title=app.config['API_TITLE'], api_version=app.config['API_VERSION']))
+    app.register_blueprint(get_swagger_blueprint(get_swagger_docs(app), app.config['API_SWAGGER_URL'],
+                                                 title=app.config['API_TITLE'],
+                                                 api_version=app.config['API_VERSION'],
+                                                 base_path=app.config['API_URL_PREFIX'])
+                           )
     # Allow CORS for the Swagger URL so swagger-ui can access it
     # CORS(app, resources={r"%s.json" % app.config['API_SWAGGER_URL']: {"origins": "*"}})
     # CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -116,7 +120,6 @@ def configure_logging(app):
 
 def register_commands(app):
     """Register Click commands."""
-
     app.cli.add_command(commands.load_schema)
 
 
