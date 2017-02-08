@@ -9,7 +9,6 @@ def test_production_config():
     app = app_factory(ProductionConfig)
     assert app.config['ENV'] == 'prod'
     assert app.config['DEBUG'] is False
-    assert app.config['DEBUG_TB_ENABLED'] is False
 
 
 def test_dev_config():
