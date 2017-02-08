@@ -30,4 +30,4 @@ def list_resources(app):
     for slug in Schema().list_files(app.config['SCHEMA_DIR']).keys():
         for endpoint, resource in resources.items():
             slugged_endpoint = endpoint.format(slug=slug)
-            yield slug, endpoint.format(slug=slug), resource
+            yield slug, slugged_endpoint, resource
